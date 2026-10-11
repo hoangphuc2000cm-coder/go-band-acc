@@ -43,23 +43,49 @@ body{min-height:100vh;background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb)
 .footer .phone{display:inline-block;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;padding:4px 12px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:6px;text-decoration:none}
 .contact-box{background:linear-gradient(135deg,#fff3cd,#ffeaa7);border-left:4px solid #ffc107;padding:12px;border-radius:8px;font-size:13px;color:#856404;margin-top:12px;text-align:center}
 .contact-box b{color:#dc3545;font-size:15px}
+.price-box{background:linear-gradient(135deg,#fff9e6,#ffeaa7);border:2px solid #ffc107;border-radius:12px;padding:14px;margin-top:16px}
+.price-title{text-align:center;font-weight:bold;color:#856404;font-size:14px;margin-bottom:12px}
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fff;border-radius:8px;margin-bottom:8px;font-size:14px}
+.price-row:last-child{margin-bottom:0}
+.price-row .label{color:#333;font-weight:600}
+.price-row .value{color:#dc3545;font-weight:bold;font-size:16px}
+.price-row .hot{background:#ff4757;color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;margin-left:6px}
 </style>
 </head>
 <body>
 <div id="app"></div>
 
 <script>
-// ========== KHO KEY: 50 KEY HP-0001 → HP-0050 ==========
-const KEY_POOL = {};
-for (let i = 1; i <= 50; i++) {
-  KEY_POOL['HP-' + String(i).padStart(4, '0')] = {
-    duration: 30 * 60 * 1000,
-    label: 'User'
-  };
-}
+// ========== 50 KEY RANDOM ==========
+const KEY_POOL = {
+  'HP-7K2A-9M3X':{duration:1800000,label:'User'},'HP-4B8N-2P1Q':{duration:1800000,label:'User'},
+  'HP-6T5R-8W4E':{duration:1800000,label:'User'},'HP-3Y9U-7I2O':{duration:1800000,label:'User'},
+  'HP-1A4S-6D8F':{duration:1800000,label:'User'},'HP-5G7H-3J9K':{duration:1800000,label:'User'},
+  'HP-2L4Z-8X6C':{duration:1800000,label:'User'},'HP-9V1B-5N7M':{duration:1800000,label:'User'},
+  'HP-3Q8W-2E4R':{duration:1800000,label:'User'},'HP-6T1Y-9U3I':{duration:1800000,label:'User'},
+  'HP-4O7P-1A5S':{duration:1800000,label:'User'},'HP-8D2F-6G4H':{duration:1800000,label:'User'},
+  'HP-3J9K-7L1Z':{duration:1800000,label:'User'},'HP-5X8C-2V4B':{duration:1800000,label:'User'},
+  'HP-9N7M-3Q1W':{duration:1800000,label:'User'},'HP-2E4R-8T6Y':{duration:1800000,label:'User'},
+  'HP-5U3I-1O7P':{duration:1800000,label:'User'},'HP-9A5S-4D2F':{duration:1800000,label:'User'},
+  'HP-6G4H-8J3K':{duration:1800000,label:'User'},'HP-2L1Z-9X7C':{duration:1800000,label:'User'},
+  'HP-5V4B-3N2M':{duration:1800000,label:'User'},'HP-8Q1W-6E9R':{duration:1800000,label:'User'},
+  'HP-4T7Y-2U5I':{duration:1800000,label:'User'},'HP-1O3P-7A9S':{duration:1800000,label:'User'},
+  'HP-6D8F-4G2H':{duration:1800000,label:'User'},'HP-3J5K-1L7Z':{duration:1800000,label:'User'},
+  'HP-9X2C-8V4B':{duration:1800000,label:'User'},'HP-7N3M-5Q1W':{duration:1800000,label:'User'},
+  'HP-2E4R-6T8Y':{duration:1800000,label:'User'},'HP-8U3I-4O2P':{duration:1800000,label:'User'},
+  'HP-1A5S-9D7F':{duration:1800000,label:'User'},'HP-6G4H-2J8K':{duration:1800000,label:'User'},
+  'HP-3L1Z-5X9C':{duration:1800000,label:'User'},'HP-7V4B-1N3M':{duration:1800000,label:'User'},
+  'HP-5Q8W-9E2R':{duration:1800000,label:'User'},'HP-4T6Y-8U1I':{duration:1800000,label:'User'},
+  'HP-2O3P-6A5S':{duration:1800000,label:'User'},'HP-8D1F-4G7H':{duration:1800000,label:'User'},
+  'HP-5J9K-3L2Z':{duration:1800000,label:'User'},'HP-9X6C-7V1B':{duration:1800000,label:'User'},
+  'HP-3N5M-8Q4W':{duration:1800000,label:'User'},'HP-6E2R-1T9Y':{duration:1800000,label:'User'},
+  'HP-7U8I-5O3P':{duration:1800000,label:'User'},'HP-4A1S-9D6F':{duration:1800000,label:'User'},
+  'HP-2G7H-5J4K':{duration:1800000,label:'User'},'HP-9L3Z-1X8C':{duration:1800000,label:'User'},
+  'HP-6V5B-3N7M':{duration:1800000,label:'User'},'HP-8Q2W-4E1R':{duration:1800000,label:'User'},
+  'HP-5T9Y-6U3I':{duration:1800000,label:'User'},'HP-7O1P-2A8S':{duration:1800000,label:'User'}
+};
 
 const LS_USED='unban_used_keys', LS_SESSION='unban_session', LS_ACCOUNT='unban_account';
-
 const getUsedKeys=()=>{const r=localStorage.getItem(LS_USED);return r?JSON.parse(r):{}};
 const markKeyUsed=(k,i)=>{const u=getUsedKeys();u[k]={usedAt:Date.now(),label:i.label};localStorage.setItem(LS_USED,JSON.stringify(u))};
 const isKeyUsed=k=>!!getUsedKeys()[k];
@@ -86,10 +112,21 @@ function renderKey(app){
     <div class="warning">💡 Mỗi key chỉ sử dụng được <b>1 lần duy nhất</b>.</div>
     <form id="keyForm">
       <div class="form-group"><label>🔑 Nhập Key</label>
-      <input type="text" id="keyInput" placeholder="HP-0001" autocomplete="off" required></div>
+      <input type="text" id="keyInput" placeholder="XXXX-XXXX-XXXX" autocomplete="off" required></div>
       <button type="submit" class="btn-submit">🚀 Xác Nhận Key</button>
     </form>
     <div id="keyResult" class="result hidden"></div>
+    <div class="price-box">
+      <div class="price-title">💰 BẢNG GIÁ KEY 💰</div>
+      <div class="price-row">
+        <span class="label">📅 Key 1 Ngày</span>
+        <span class="value">20.000đ</span>
+      </div>
+      <div class="price-row">
+        <span class="label">📆 Key 1 Tuần<span class="hot">HOT</span></span>
+        <span class="value">50.000đ</span>
+      </div>
+    </div>
     <div class="footer">
       Made by <b>Hoàng Phúc</b><br>
       <a href="tel:0916678949" class="phone">📞 0916 678 949</a>
@@ -218,3 +255,4 @@ render();
 </script>
 </body>
 </html>
+
