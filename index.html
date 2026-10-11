@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Unban Tool</title>
+<title>Unban Tool - Hoàng Phúc</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 body{min-height:100vh;background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb);display:flex;justify-content:center;align-items:center;padding:20px}
 .container{background:#fff;border-radius:16px;padding:30px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px}
 .header h1{font-size:22px;color:#1e3c72}
-.badge{background:#ff4757;color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;font-weight:bold}
+.badge-name{background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;font-size:11px;padding:5px 12px;border-radius:20px;font-weight:bold;box-shadow:0 4px 12px rgba(106,17,203,.3)}
 .warning{background:#e3f2fd;border-left:4px solid #2196f3;padding:12px;border-radius:8px;font-size:13px;color:#1565c0;margin-bottom:20px}
 .form-group{margin-bottom:16px}
 .form-group label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#333}
@@ -30,11 +30,6 @@ body{min-height:100vh;background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb)
 .user-bar code{background:#fff;padding:2px 6px;border-radius:4px;color:#6a11cb;font-weight:bold;font-size:11px}
 .btn-logout{background:#ff4757;color:#fff;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold}
 .btn-logout:hover{background:#e63946}
-.key-info{margin-top:20px;padding:14px;background:#f8f9fa;border-radius:10px;font-size:13px;color:#555}
-.key-info ul{margin:8px 0 0 20px}
-.key-info code{background:#e9ecef;padding:2px 8px;border-radius:4px;color:#6a11cb;font-weight:bold}
-.btn-reset{margin-top:12px;width:100%;padding:10px;background:#6c757d;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold}
-.btn-reset:hover{background:#5a6268}
 .account-info{background:#f8f9fa;border:2px solid #e0e0e0;border-radius:12px;padding:14px 16px;margin-bottom:16px}
 .account-header{font-weight:bold;color:#1e3c72;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed #ccc;font-size:14px}
 .account-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:#333}
@@ -43,23 +38,32 @@ body{min-height:100vh;background:linear-gradient(135deg,#1e3c72,#2a5298,#6a11cb)
 .status-banned{color:#dc3545!important}
 .btn-back{width:100%;margin-top:12px;padding:12px;background:#fff;color:#6a11cb;border:2px solid #6a11cb;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer}
 .btn-back:hover{background:#6a11cb;color:#fff}
+.footer{text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#888}
+.footer b{color:#6a11cb}
+.footer .phone{display:inline-block;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;padding:4px 12px;border-radius:20px;font-weight:bold;font-size:12px;margin-top:6px;text-decoration:none}
+.contact-box{background:linear-gradient(135deg,#fff3cd,#ffeaa7);border-left:4px solid #ffc107;padding:12px;border-radius:8px;font-size:13px;color:#856404;margin-top:12px;text-align:center}
+.contact-box b{color:#dc3545;font-size:15px}
 </style>
 </head>
 <body>
 <div id="app"></div>
 
 <script>
-const KEY_POOL = {
-  'DEMO-2024': { role:'user', duration:30*60*1000, label:'User' },
-  'VIP-8888':  { role:'vip',  duration:24*60*60*1000, label:'VIP' },
-  'ADMIN-999': { role:'admin',duration:7*24*60*60*1000, label:'Admin' }
-};
+// ========== KHO KEY: 100 KEY HP-0001 → HP-0100 ==========
+const KEY_POOL = {};
+for (let i = 1; i <= 100; i++) {
+  KEY_POOL['HP-' + String(i).padStart(4, '0')] = {
+    duration: 30 * 60 * 1000,
+    label: 'User'
+  };
+}
+
 const LS_USED='unban_used_keys', LS_SESSION='unban_session', LS_ACCOUNT='unban_account';
 
 const getUsedKeys=()=>{const r=localStorage.getItem(LS_USED);return r?JSON.parse(r):{}};
-const markKeyUsed=(k,i)=>{const u=getUsedKeys();u[k]={usedAt:Date.now(),role:i.role,label:i.label};localStorage.setItem(LS_USED,JSON.stringify(u))};
+const markKeyUsed=(k,i)=>{const u=getUsedKeys();u[k]={usedAt:Date.now(),label:i.label};localStorage.setItem(LS_USED,JSON.stringify(u))};
 const isKeyUsed=k=>!!getUsedKeys()[k];
-const saveSession=(k,i)=>localStorage.setItem(LS_SESSION,JSON.stringify({key:k,role:i.role,label:i.label,startAt:Date.now(),expireAt:Date.now()+i.duration}));
+const saveSession=(k,i)=>localStorage.setItem(LS_SESSION,JSON.stringify({key:k,label:i.label,startAt:Date.now(),expireAt:Date.now()+i.duration}));
 const getSession=()=>{const r=localStorage.getItem(LS_SESSION);if(!r)return null;try{const s=JSON.parse(r);if(Date.now()>s.expireAt){localStorage.removeItem(LS_SESSION);return null}return s}catch{return null}};
 const saveAccount=d=>localStorage.setItem(LS_ACCOUNT,JSON.stringify({...d,savedAt:Date.now()}));
 const getAccount=()=>{const r=localStorage.getItem(LS_ACCOUNT);return r?JSON.parse(r):null};
@@ -78,18 +82,17 @@ function render(){
 function renderKey(app){
   app.className='container';
   app.innerHTML=`
-    <div class="header"><h1>🔐 Xác Thực Key</h1><span class="badge">STEP 1</span></div>
+    <div class="header"><h1>🔐 Xác Thực Key</h1><span class="badge-name">By Hoàng Phúc</span></div>
     <div class="warning">💡 Mỗi key chỉ sử dụng được <b>1 lần duy nhất</b>.</div>
     <form id="keyForm">
       <div class="form-group"><label>🔑 Nhập Key</label>
-      <input type="text" id="keyInput" placeholder="XXXX-XXXX" autocomplete="off" required></div>
+      <input type="text" id="keyInput" placeholder="HP-0001" autocomplete="off" required></div>
       <button type="submit" class="btn-submit">🚀 Xác Nhận Key</button>
     </form>
     <div id="keyResult" class="result hidden"></div>
-    <div class="key-info">
-      <p>📌 <b>Key khả dụng:</b></p>
-      <ul><li><code>DEMO-2024</code></li><li><code>VIP-8888</code></li><li><code>ADMIN-999</code></li></ul>
-      <button id="resetBtn" class="btn-reset">🔄 Làm Mới</button>
+    <div class="footer">
+      Made by <b>Hoàng Phúc</b><br>
+      <a href="tel:0916678949" class="phone">📞 0916 678 949</a>
     </div>`;
   document.getElementById('keyForm').addEventListener('submit',e=>{
     e.preventDefault();
@@ -98,16 +101,13 @@ function renderKey(app){
     res.className='result loading';res.classList.remove('hidden');res.textContent='⏳ Đang xác thực...';
     setTimeout(()=>{
       const info=KEY_POOL[k];
-      if(!info){res.className='result error';res.innerHTML='❌ <b>Key không hợp lệ!</b>';return}
+      if(!info){res.className='result error';res.innerHTML='❌ <b>Key không hợp lệ!</b><br><br>Liên hệ <b>0916 678 949</b> để nhận key.';return}
       if(isKeyUsed(k)){const t=new Date(getUsedKeys()[k].usedAt).toLocaleString('vi-VN');
-        res.className='result error';res.innerHTML=`🚫 <b>Key đã được sử dụng!</b><br><br>📅 ${t}<br><i>Mỗi key chỉ dùng 1 lần.</i>`;return}
+        res.className='result error';res.innerHTML=`🚫 <b>Key đã được sử dụng!</b><br><br>📅 ${t}<br><i>Mỗi key chỉ dùng 1 lần.</i><br><br>Liên hệ <b>0916 678 949</b> để mua key mới.`;return}
       markKeyUsed(k,info);saveSession(k,info);
       res.className='result success';res.innerHTML='✅ <b>Thành công!</b><br>Chuyển tới nhập ID...';
       setTimeout(()=>{currentPage='lookup';render()},900);
     },800);
-  });
-  document.getElementById('resetBtn').addEventListener('click',()=>{
-    if(confirm('Làm mới toàn bộ?')){localStorage.clear();alert('Đã làm mới!');location.reload()}
   });
 }
 
@@ -116,7 +116,7 @@ function renderLookup(app){
   if(!s){alert('⛔ Cần nhập key!');currentPage='key';render();return}
   app.className='container';
   app.innerHTML=`
-    <div class="header"><h1>🆔 Nhập ID Tài Khoản</h1><span class="badge">STEP 2</span></div>
+    <div class="header"><h1>🆔 Nhập ID Tài Khoản</h1><span class="badge-name">By Hoàng Phúc</span></div>
     <div class="user-bar"><span>👋 ${s.label} | 🔑 <code>${s.key}</code></span>
       <button id="logoutBtn" class="btn-logout">🚪 Thoát</button></div>
     <div class="warning">✅ Key hợp lệ! Nhập ID tài khoản cần gỡ band.</div>
@@ -132,7 +132,11 @@ function renderLookup(app){
         <input type="text" id="nickname" placeholder="Tên trong game" required></div>
       <button type="submit" class="btn-submit">🔍 Kiểm Tra</button>
     </form>
-    <div id="lookupResult" class="result hidden"></div>`;
+    <div id="lookupResult" class="result hidden"></div>
+    <div class="footer">
+      Made by <b>Hoàng Phúc</b><br>
+      <a href="tel:0916678949" class="phone">📞 0916 678 949</a>
+    </div>`;
   document.getElementById('logoutBtn').addEventListener('click',()=>{localStorage.removeItem(LS_SESSION);localStorage.removeItem(LS_ACCOUNT);currentPage='key';render()});
   document.getElementById('lookupForm').addEventListener('submit',async e=>{
     e.preventDefault();
@@ -159,7 +163,7 @@ function renderUnban(app){
   if(!acc){alert('⛔ Cần nhập ID!');currentPage='lookup';render();return}
   app.className='container';
   app.innerHTML=`
-    <div class="header"><h1>🔓 Gỡ Band</h1><span class="badge">STEP 3</span></div>
+    <div class="header"><h1>🔓 Gỡ Band</h1><span class="badge-name">By Hoàng Phúc</span></div>
     <div class="user-bar"><span>👋 ${s.label}</span>
       <button id="logoutBtn" class="btn-logout">🚪 Thoát</button></div>
     <div class="account-info">
@@ -177,7 +181,11 @@ function renderUnban(app){
       <button type="submit" class="btn-submit">🚀 Gửi Yêu Cầu</button>
     </form>
     <div id="result" class="result hidden"></div>
-    <button id="backBtn" class="btn-back">◀️ Đổi tài khoản khác</button>`;
+    <button id="backBtn" class="btn-back">◀️ Đổi tài khoản khác</button>
+    <div class="footer">
+      Made by <b>Hoàng Phúc</b><br>
+      <a href="tel:0916678949" class="phone">📞 0916 678 949</a>
+    </div>`;
   document.getElementById('logoutBtn').addEventListener('click',()=>{localStorage.removeItem(LS_SESSION);localStorage.removeItem(LS_ACCOUNT);currentPage='key';render()});
   document.getElementById('backBtn').addEventListener('click',()=>{clearAccount();currentPage='lookup';render()});
   document.getElementById('unbanForm').addEventListener('submit',async e=>{
@@ -193,9 +201,9 @@ function renderUnban(app){
     const ok=Math.random()>0.3;
     if(ok){const tid='UB'+Math.random().toString(36).substring(2,10).toUpperCase();
       res.className='result success';
-      res.innerHTML=`✅ <b>Yêu cầu đã ghi nhận!</b><br><br>🎫 Ticket: <b>${tid}</b><br>🎮 ${data.game.toUpperCase()}<br>🆔 ${data.uid}<br>👤 ${data.nickname}<br>📧 ${data.email}<br>📅 ${data.time}<br><br><i>⏰ Chờ 24-72h để xử lý.</i>`;
+      res.innerHTML=`✅ <b>Yêu cầu đã ghi nhận!</b><br><br>🎫 Ticket: <b>${tid}</b><br>🎮 ${data.game.toUpperCase()}<br>🆔 ${data.uid}<br>👤 ${data.nickname}<br>📧 ${data.email}<br>📅 ${data.time}<br><br><i>⏰ Chờ 24-72h để xử lý.</i><div class="contact-box">📞 Cần hỗ trợ gấp?<br>Liên hệ <b>0916 678 949</b></div>`;
     }else{res.className='result error';
-      res.innerHTML=`❌ <b>Yêu cầu bị từ chối!</b><br><br>Lý do: Tài khoản vi phạm nghiêm trọng.`}
+      res.innerHTML=`❌ <b>Yêu cầu bị từ chối!</b><br><br>Lý do: Tài khoản vi phạm nghiêm trọng.<div class="contact-box">📞 Cần hỗ trợ?<br>Liên hệ <b>0916 678 949</b></div>`}
   });
 }
 
